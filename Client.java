@@ -10,6 +10,7 @@ public class Client {
 	String ip;
 	String message;
 	DataOutputStream output = null;
+	int once = 0;
 	
 	public Client(){
 		try{  
@@ -19,9 +20,24 @@ public class Client {
         	System.out.println("Input the IP address");
         	ip = scanner.next();
         	client = new Socket(ip,port);        	
+        	
+        	//while(true){
+    			try{
+    				BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));			
+    				while(client.isConnected()){
+    				message = br.readLine();
+    				System.out.println(message);
+    				}
+    			//	output = new DataOutputStream(client.getOutputStream());
+    			}
+    			catch(IOException e){
+    				
+    			}
+        	//}
+        	
+        	/*Thread test = new Thread(talk);
+            test.start();*/
 
-        	Thread test = new Thread(talk);
-        	test.start();
 		}
 		catch(IOException e){System.out.println(e);}
 		
@@ -31,15 +47,7 @@ public class Client {
 		System.out.println("client thread is running");
 		Server abc = new Server();
 		System.out.println("client become the server");
-		/*while(true){
-			try{
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));			
-				message = br.readLine();
-				System.out.println(message);
-			//	output = new DataOutputStream(client.getOutputStream());
-			}
-			catch(IOException e){System.out.println(e);}
-    	}*/		
+		
 	}
 	};
 }
