@@ -1,22 +1,11 @@
-package haha;
-import java.util.*;
+package test;
+import test.Client;
+import test.Server;
+
+import java.util.Scanner;
 public class Main {
 	public static void main(String[] args){
-		Scanner scanner = new Scanner(System.in);
-		int choice=0;
-		choice = scanner.nextInt();
-		
-		
-		if(choice==0){
-		
-			Server server = new Server();
-		}
-		else{
-			
-			Client newclient = new Client();
-			
-		}
-			
+		System.out.println("Start Server!!");
+		Server server = new Server();			
 	}
-
 }

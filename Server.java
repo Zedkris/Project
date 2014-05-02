@@ -1,21 +1,21 @@
-package haha;
+package test;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Server{		
+import test.Client;
+
+public class Server {
 	ServerSocket serversocket = null;
 	Socket clientsocket = null;
 	int port = 0;
-	int clientnubmer = 0;
-	BufferedReader getinput = null;//= new BufferedReader( new InputStreamReader(System.in));
-	PrintWriter output = null;
-	String message;
+	int clientnumber = 0;
 	Scanner scanner = null ;
-	int once = 0;
-	
-	public Server() {                             // create socket 
+	String[] IPtable = new String[999];
+	int IPindex;
+	private static ArrayList<Socket> players=new ArrayList<Socket>();
+	public Server(){
 		try {
 			// call pingipornmap and getARPtable
 			PingIPorNmap p = new PingIPorNmap();
@@ -25,82 +25,54 @@ public class Server{
 			} catch(InterruptedException ex) {
 			 
 			}
-			GetARPtable getARPtable = new GetARPtable();
-			getARPtable.get();
+			GetARPtable ARP = new GetARPtable();
+			ARP.get();
+			IPtable = ARP.IP2table;
+			IPindex = ARP.index;
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 		
 		
-        try {
+		try {
         	System.out.println("Input the port");
         	scanner = new Scanner(System.in);
         	port = scanner.nextInt();
         	serversocket = new ServerSocket(port);
-        	//Thread chat = new Thread(talk);
-        	//System.out.println("Input the IP address");
-        	System.out.println("test message");
-    		Scanner fff = new Scanner(System.in);
-    		String testmess = fff.next();
+        	
+        	Thread connect = new Thread(ClientStartConnect);  // Connect to Another Server
+    		connect.start();
     		
-        	while(true){
+        	while(!serversocket.isClosed()){
         		clientsocket = serversocket.accept();
-        		clientnubmer++;
-        		if(clientnubmer>0){
-        			System.out.println("the nubmer is "+clientnubmer);
-        			//chat.start();
+        		players.add(clientsocket);
+        		clientnumber++;
+        		
+        		if(clientnumber>0){
+        			System.out.println("Client Connected : " + clientnumber);
+        			/*Thread connect = new Thread(ClientStartConnect);  // Connect to Another Server
+            		connect.start();*/
     
         		}
-        		try{
-        			 if(clientsocket.isConnected()){   //read the message from client
-        				/*getinput = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
-        				message = getinput.readLine();
-        				System.out.println("client"+ clientnubmer);
-        				output = new PrintWriter(clientsocket.getOutputStream());
-        				 BufferedReader wt=new BufferedReader(new InputStreamReader(System.in));*/
-        				BufferedWriter bw;
-        	            bw = new BufferedWriter( new OutputStreamWriter(clientsocket.getOutputStream()));
-        	            bw.write(testmess + "\n");
-        	            bw.flush();
-        			}
-        		}
-        		catch(IOException e){System.out.println("輸入流之後的IOException");}
         	}
         	
-        } 
-        catch (java.io.IOException e) {
-            System.out.println("Socket Using!");
-            System.out.println("IOException :" + e.toString());
+        	
+		} catch (java.io.IOException e) {
+            System.out.println("IP has been using!!!");
         }
-    }
-	
-	
-	public Runnable talk = new Runnable(){
-	public void run(){
-		System.out.println("server Thread is running ");
-		
-		Client test = new Client();
-		System.out.println("server become the client");
-
-		System.out.println("test message");
-		Scanner fff = new Scanner(System.in);
-		String testmess = fff.next();
-		try{
-			while(true){   //read the message from client
-				/*getinput = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
-				message = getinput.readLine();
-				System.out.println("client"+ clientnubmer);
-				output = new PrintWriter(clientsocket.getOutputStream());
-				 BufferedReader wt=new BufferedReader(new InputStreamReader(System.in));*/
-				BufferedWriter bw;
-	            bw = new BufferedWriter( new OutputStreamWriter(clientsocket.getOutputStream()));
-	            bw.write(testmess + "\n");
-	            bw.flush();
-	            bw.close();
-			}
-		}
-		catch(IOException e){System.out.println(e);}
-		
 	}
+
+	public Runnable ClientStartConnect = new Runnable(){
+		public void run(){
+			for(int i=0;i<IPindex;i++){
+				System.out.println("IP " + i + " : " + IPtable[i]);
+			}
+			System.out.println("Open Client : ");
+			System.out.println("Input IP : ");
+			String cip = scanner.next();
+			System.out.println("port");
+			int cport = scanner.nextInt();
+			Client test = new Client(cip,cport);
+		}
 	};
 }
