@@ -49,12 +49,6 @@ public class GetARPtable {
 
 	public static void get() {
 		InetAddress ip = null;
-		try {
-			ip = InetAddress.getByName("10.0.1.56");
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		GetARPtable(ip);
 

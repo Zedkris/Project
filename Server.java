@@ -33,31 +33,32 @@ public class Server {
 			e.printStackTrace();
 		}
 		
-		
 		try {
         	System.out.println("Input the port");
         	scanner = new Scanner(System.in);
         	port = scanner.nextInt();
         	serversocket = new ServerSocket(port);
+        	//serversocket.setSoTimeout(5000);
         	
         	Thread connect = new Thread(ClientStartConnect);  // Connect to Another Server
     		connect.start();
     		
         	while(!serversocket.isClosed()){
-        		clientsocket = serversocket.accept();
-        		players.add(clientsocket);
-        		clientnumber++;
-        		
-        		if(clientnumber>0){
-        			System.out.println("Client Connected : " + clientnumber);
-        			/*Thread connect = new Thread(ClientStartConnect);  // Connect to Another Server
-            		connect.start();*/
-    
-        		}
+        			clientsocket = serversocket.accept();
+            		players.add(clientsocket);
+            		clientnumber++;
+            		if(clientnumber>0){
+            			System.out.println(" " + clientnumber + ". Client " + clientsocket.getInetAddress() + " connect!!");
+            			/*Thread connect = new Thread(ClientStartConnect);  // Connect to Another Server
+                		connect.start();*/
+        
+            		}
         	}
-        	
-        	
-		} catch (java.io.IOException e) {
+        	/*
+        	Thread connect = new Thread(ClientStartConnect);  // Connect to Another Server
+    		connect.start();
+    		*/
+		}  catch (java.io.IOException e) {
             System.out.println("IP has been using!!!");
         }
 	}
@@ -65,14 +66,15 @@ public class Server {
 	public Runnable ClientStartConnect = new Runnable(){
 		public void run(){
 			for(int i=0;i<IPindex;i++){
-				System.out.println("IP " + i + " : " + IPtable[i]);
-			}
-			System.out.println("Open Client : ");
-			System.out.println("Input IP : ");
-			String cip = scanner.next();
-			System.out.println("port");
-			int cport = scanner.nextInt();
-			Client test = new Client(cip,cport);
+				System.out.println("IP " + (i+1) + " : " + IPtable[i]);
+				try {
+					Client test = new Client(IPtable[i],port);
+				} catch (SocketException e) {
+					// TODO Auto-generated catch block
+					System.out.println("No connect!!");
+					break;
+				}
+			}			
 		}
 	};
 }
