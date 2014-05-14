@@ -24,10 +24,12 @@ public class UdpReceiver implements Runnable{
 	private volatile boolean keepRunning = true;
 	private Thread udpReceiverthread;
 	public static String IPAddress = "read IP error!";
-	private static int[] ipsrc = new int[999];
-	
+	private static int[] ipsrc = new int[999];     // 10.0.1.86
+													  // ipsrc[0]=10
+													  // ipsrc[1]=0
+	  												  // ipsrc[2]=1
 	public UdpReceiver(Receiver parent, int nodeAddress) throws SocketException, UnknownHostException, BindException{
-		int index = 0;
+		int index = 0;                            // 30 ~ 77 自動讀取網域 10.0.1.x
 		String fullip = ""; 
 		NMAP nmap = new NMAP();
 		IPAddress=nmap.checkIPAddress();
